@@ -1,103 +1,201 @@
+// Wait for the DOM to be fully loaded before running any script
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Select DOM Elements ---
-    const textInput = document.getElementById('text-input');
-    const outputPreview = document.getElementById('output-preview');
-    const effectControls = document.getElementById('effect-controls');
-    const clearBtn = document.getElementById('clear-btn');
-    const copyBtn = document.getElementById('copy-btn');
-    const speedSlider = document.getElementById('speed-slider');
+    /**
+     * ----------------------------------------
+     * RANDOM NUMBER GENERATOR
+     * ----------------------------------------
+     */
+    const minNumInput = document.getElementById('min-num');
+    const maxNumInput = document.getElementById('max-num');
+    const generateNumBtn = document.getElementById('generate-num-btn');
+    const clearNumBtn = document.getElementById('clear-num-btn');
+    const numberResult = document.getElementById('number-result');
+    const numError = document.getElementById('num-error');
 
-    let currentEffect = 'effect-none'; // Default effect
+    // Generate Button Click
+    generateNumBtn.addEventListener('click', () => {
+        const min = parseInt(minNumInput.value);
+        const max = parseInt(maxNumInput.value);
 
-    // --- 2. Main Update Function ---
-    function updatePreview() {
-        const text = textInput.value;
-        
-        // Clear previous content and classes
-        outputPreview.innerHTML = '';
-        outputPreview.className = 'preview-box'; // Reset to base class
-        
-        // Get the currently selected effect
-        const selectedEffectInput = document.querySelector('input[name="effect"]:checked');
-        if (selectedEffectInput) {
-            currentEffect = selectedEffectInput.value;
+        // --- Validation ---
+        if (isNaN(min) || isNaN(max)) {
+            showError('Both inputs must be valid numbers.');
+            return;
         }
-
-        if (currentEffect === 'effect-none') {
-            outputPreview.textContent = text;
+        if (min >= max) {
+            showError('Minimum number must be less than maximum number.');
             return;
         }
 
-        // --- Special Case: Typewriter ---
-        // This effect animates the container, not individual spans
-        if (currentEffect === 'effect-typewriter') {
-            outputPreview.classList.add(currentEffect);
-            outputPreview.textContent = text; // Set plain text
-            // Set custom property for character count, used by CSS 'steps()'
-            outputPreview.style.setProperty('--chars', text.length);
-            return; // Stop here for typewriter
-        }
+        // --- If valid, generate ---
+        hideError();
+        const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+        numberResult.textContent = randomNum;
+    });
 
-        // --- Default Case: Split text into <span> elements ---
-        outputPreview.classList.add(currentEffect);
+    // Clear Button Click
+    clearNumBtn.addEventListener('click', () => {
+        minNumInput.value = '1';
+        maxNumInput.value = '100';
+        numberResult.textContent = '--';
+        hideError();
+    });
 
-        text.split('').forEach((char, index) => {
-            const span = document.createElement('span');
-            
-            // Use non-breaking space for spaces to ensure they are rendered
-            span.textContent = char === ' ' ? '\u00A0' : char;
-            
-            // Set the '--i' custom property for staggered animation delays
-            span.style.setProperty('--i', index);
-            
-            outputPreview.appendChild(span);
-        });
+    // Helper functions for number error
+    function showError(message) {
+        numError.textContent = message;
+        numError.style.display = 'block';
+        numberResult.textContent = '--';
+    }
+    function hideError() {
+        numError.style.display = 'none';
     }
 
-    // --- 3. Event Listeners ---
+    /**
+     * ----------------------------------------
+     * COIN FLIPPER
+     * ----------------------------------------
+     */
+    const flipCoinBtn = document.getElementById('flip-coin-btn');
+    const coinVisual = document.getElementById('coin-visual');
+    const coinResult = document.getElementById('coin-result');
+    const flipHistoryList = document.getElementById('flip-history');
+    const resetHistoryBtn = document.getElementById('reset-history-btn');
 
-    // Real-time update as user types
-    textInput.addEventListener('input', updatePreview);
+    let flipHistory = []; // State for the history
+    const MAX_HISTORY = 10;
 
-    // Update when a new effect is selected
-    effectControls.addEventListener('change', updatePreview);
+    // Flip Button Click
+    flipCoinBtn.addEventListener('click', () => {
+        // Disable button during animation
+        flipCoinBtn.disabled = true;
 
-    // Clear button functionality
-    clearBtn.addEventListener('click', () => {
-        textInput.value = '';
-        updatePreview();
-        textInput.focus();
+        // Add flipping class for CSS animation
+        coinVisual.classList.add('flipping');
+        coinResult.textContent = 'Flipping...';
+
+        // Determine result
+        const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+
+        // Wait for animation to finish (1s, matching CSS)
+        setTimeout(() => {
+            // Update visual and text
+            if (result === 'Heads') {
+                coinVisual.textContent = '😀'; // Emoji for Heads
+                coinVisual.style.backgroundColor = 'var(--heads-color)';
+                coinVisual.style.borderColor = '#f39c12';
+            } else {
+                coinVisual.textContent = '🪙'; // Emoji for Tails
+                coinVisual.style.backgroundColor = 'var(--tails-color)';
+                coinVisual.style.borderColor = '#138496';
+            }
+            coinResult.textContent = result;
+
+            // Update state and UI
+            updateFlipHistory(result);
+
+            // Re-enable button and remove animation class
+            flipCoinBtn.disabled = false;
+            coinVisual.classList.remove('flipping');
+        }, 1000); // 1000ms = 1s
     });
 
-    // Copy to clipboard functionality
-    copyBtn.addEventListener('click', () => {
-        // Copy the plain text content, not the HTML
-        navigator.clipboard.writeText(outputPreview.innerText)
-            .then(() => {
-                // Visual feedback
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyBtn.textContent = 'Copy Text';
-                }, 1500);
-            })
-            .catch(err => {
-                console.error('Failed to copy text: ', err);
-            });
+    // Reset History Button Click
+    resetHistoryBtn.addEventListener('click', () => {
+        flipHistory = [];
+        renderFlipHistory();
     });
 
-    // Animation speed slider
-    speedSlider.addEventListener('input', (e) => {
-        // Update the '--anim-speed' CSS variable on the root element
-        document.documentElement.style.setProperty('--anim-speed', e.target.value);
+    // Add new flip to history and trim array
+    function updateFlipHistory(result) {
+        flipHistory.unshift(result); // Add to the beginning
+        if (flipHistory.length > MAX_HISTORY) {
+            flipHistory.pop(); // Remove the last item
+        }
+        renderFlipHistory();
+    }
+
+    // Render the history list in the UI
+    function renderFlipHistory() {
+        flipHistoryList.innerHTML = ''; // Clear current list
+        if (flipHistory.length === 0) {
+            flipHistoryList.innerHTML = '<li>No flips yet...</li>';
+            return;
+        }
+        flipHistory.forEach(flip => {
+            const li = document.createElement('li');
+            li.textContent = flip;
+            li.className = flip.toLowerCase(); // Adds .heads or .tails class
+            flipHistoryList.appendChild(li);
+        });
+    }
+    // Initial render on load
+    renderFlipHistory();
+
+
+    /**
+     * ----------------------------------------
+     * RANDOM NAME PICKER
+     * ----------------------------------------
+     */
+    const nameListInput = document.getElementById('name-list');
+    const pickNameBtn = document.getElementById('pick-name-btn');
+    const clearNameBtn = document.getElementById('clear-name-btn');
+    const nameCount = document.getElementById('name-count');
+    const nameResult = document.getElementById('name-result');
+    const prevNameResult = document.getElementById('prev-name-result');
+
+    // Update name count live as user types
+    nameListInput.addEventListener('input', updateNameCount);
+
+    // Pick Name Button Click
+    pickNameBtn.addEventListener('click', () => {
+        const names = getNamesArray();
         
-        // Re-run the update logic to apply new speed
-        // This is important for CSS animations that depend on variables at creation time
-        updatePreview();
+        if (names.length === 0) {
+            nameResult.textContent = 'No names';
+            prevNameResult.textContent = '--';
+            return;
+        }
+
+        // Pick a random name
+        const randomIndex = Math.floor(Math.random() * names.length);
+        const selectedName = names[randomIndex];
+
+        // Move current winner to "previous"
+        const currentWinner = nameResult.textContent;
+        if (currentWinner !== '--' && currentWinner !== 'No names') {
+            prevNameResult.textContent = currentWinner;
+        }
+
+        // Display new winner
+        nameResult.textContent = selectedName;
     });
 
-    // --- 4. Initial Call ---
-    // Run once on load to format any default text (if any)
-    updatePreview();
+    // Clear Button Click
+    clearNameBtn.addEventListener('click', () => {
+        nameListInput.value = '';
+        nameResult.textContent = '--';
+        prevNameResult.textContent = '--';
+        updateNameCount();
+    });
+
+    // Helper to get names from textarea
+    function getNamesArray() {
+        const text = nameListInput.value.trim();
+        if (text === '') return [];
+        
+        // Split by comma OR newline, trim whitespace, and filter out empty strings
+        return text.split(/[\n,]+/)
+                   .map(name => name.trim())
+                   .filter(name => name.length > 0);
+    }
+
+    // Helper to update the name count
+    function updateNameCount() {
+        const names = getNamesArray();
+        nameCount.textContent = names.length;
+    }
 
 });
