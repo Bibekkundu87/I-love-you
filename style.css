@@ -1,346 +1,303 @@
-/* --- CSS Variables (The "Theme") --- */
+/* --- Root Variables & Base Setup --- */
 :root {
-    --primary-color: #007bff;
-    --primary-hover: #0056b3;
-    --secondary-btn-color: #6c757d;
-    --secondary-btn-hover: #5a6268;
-    --card-bg: #ffffff;
-    --body-bg: #f8f9fa;
-    --text-dark: #212529;
-    --text-light: #f8f9fa;
-    --text-muted: #6c757d;
-    --border-color: #dee2e6;
-    --error-color: #dc3545;
-    --success-color: #28a745;
-    --heads-color: #ffc107;
-    --tails-color: #17a2b8;
-
-    --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --border-radius: 8px;
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --transition-speed: 0.2s ease-in-out;
+    --anim-speed: 1; /* Default animation speed multiplier */
+    --bg-color: #1a1a2e;
+    --container-bg: #1f1f3a;
+    --primary-color: #e0e0e0;
+    --secondary-color: #fca311;
+    --border-color: #4a4a6a;
+    --shadow-color: rgba(0, 0, 0, 0.2);
 }
 
-/* --- Global Reset & Body Styling --- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-html {
-    font-size: 16px;
-    scroll-behavior: smooth;
-}
-
 body {
-    font-family: var(--font-family);
-    background-color: var(--body-bg);
-    color: var(--text-dark);
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* --- Header & Footer --- */
-header {
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    padding: 1.5rem 2rem;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-header h1 {
-    font-weight: 700;
-}
-
-footer {
-    background-color: var(--text-dark);
-    color: var(--text-muted);
-    text-align: center;
-    padding: 1.5rem;
-    margin-top: auto; /* Pushes footer to the bottom */
-}
-
-/* --- Main Content Layout (Responsive Grid) --- */
-main {
-    flex: 1; /* Ensures main content fills available space */
-    width: 100%;
-    max-width: 1400px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    display: grid;
-    /* Responsive grid: 1 column on small, 2 on medium, 3 on large */
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-}
-
-/* --- Tool Card Styling --- */
-.tool-card {
-    background-color: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-.tool-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.tool-card h2 {
-    font-weight: 600;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, var(--bg-color), #2a2a4e);
     color: var(--primary-color);
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    background: var(--container-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    border: 1px solid var(--border-color);
+}
+
+h1 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #b0b0d0;
+}
+
+h3 {
+    margin-bottom: 1rem;
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.5rem;
+    color: #fff;
 }
 
-.description {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-}
-
-/* --- Form & Input Elements --- */
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-input[type="number"],
-textarea {
+/* --- Input & Controls --- */
+.input-section textarea {
     width: 100%;
-    padding: 0.75rem;
-    font-family: var(--font-family);
-    font-size: 1rem;
+    height: 120px;
+    padding: 1rem;
+    border-radius: 8px;
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-input[type="number"]:focus,
-textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-}
-
-textarea {
+    background: #2a2a4e;
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
     resize: vertical;
-    min-height: 120px;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* --- Button Styling --- */
-.button-group {
+.input-section textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 10px rgba(252, 163, 17, 0.3);
+}
+
+.input-controls {
     display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.input-controls button {
+    flex-grow: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#clear-btn {
+    background: #5a5a7a;
+    color: var(--primary-color);
+}
+#clear-btn:hover {
+    background: #6a6a8a;
+}
+
+#copy-btn {
+    background: var(--secondary-color);
+    color: var(--bg-color);
+}
+#copy-btn:hover {
+    background: #ffb74d;
+}
+
+/* --- Effect Selection --- */
+.controls-panel {
+    margin-top: 2rem;
+}
+
+.effects-grid {
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
 }
 
-.primary-btn,
-.secondary-btn {
-    flex: 1; /* Make buttons share space */
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    font-weight: 600;
-    border: none;
-    border-radius: var(--border-radius);
+.effects-grid input[type="radio"] {
+    display: none; /* Hide the actual radio button */
+}
+
+.effects-grid label {
+    padding: 0.7rem 1.2rem;
+    background: #3a3a5a;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color var(--transition-speed), transform var(--transition-speed);
-}
-
-.primary-btn {
-    background-color: var(--primary-color);
-    color: var(--text-light);
-}
-
-.primary-btn:hover {
-    background-color: var(--primary-hover);
-}
-
-.secondary-btn {
-    background-color: var(--secondary-btn-color);
-    color: var(--text-light);
-}
-
-.secondary-btn:hover {
-    background-color: var(--secondary-btn-hover);
-}
-
-.primary-btn:active,
-.secondary-btn:active {
-    transform: scale(0.98);
-}
-
-.secondary-btn.small {
-    flex: 0 1 auto; /* Don't grow, shrink if needed, auto basis */
-    padding: 0.25rem 0.75rem;
-    font-size: 0.85rem;
-}
-
-
-/* --- Result & Info Display --- */
-.result-container {
-    margin-top: 0.5rem;
-}
-
-.result-container h3,
-.result-container h4 {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.result-display {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    text-align: center;
-    background-color: var(--body-bg);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    word-wrap: break-word;
-}
-
-.result-container.secondary {
-    opacity: 0.8;
-}
-.result-container.secondary .result-display,
-.result-container.secondary #prev-name-result {
-    font-size: 1.25rem;
-    padding: 0.75rem;
-    color: var(--text-dark);
-}
-
-.info-text {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-}
-
-.error-message {
-    color: var(--error-color);
-    font-weight: 600;
-    display: none; /* Hidden by default */
-    text-align: center;
-    background: rgba(220, 53, 69, 0.1);
-    padding: 0.5rem;
-    border-radius: var(--border-radius);
-}
-
-/* --- Specific Tool Styles --- */
-
-/* Number Generator */
-.form-controls {
-    display: flex;
-    gap: 1rem;
-}
-.input-group {
-    flex: 1;
-}
-
-/* Coin Flipper */
-.coin-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.coin {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: var(--heads-color);
-    color: var(--text-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    font-weight: 700;
-    border: 5px solid;
-    border-color: #f39c12; /* Darker gold */
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
-    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.coin.flipping {
-    transform: rotateY(1800deg); /* Multiple spins for effect */
-}
-
-#coin-result {
-    font-size: 1.75rem; /* Smaller than main result display */
-    padding: 0;
-    background: none;
-}
-
-.history-container {
-    border-top: 1px solid var(--border-color);
-    padding-top: 1rem;
-}
-
-.history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-#flip-history {
-    list-style: none;
-    max-height: 150px;
-    overflow-y: auto;
+    transition: background-color 0.3s, box-shadow 0.3s;
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
+    font-weight: 500;
 }
 
-#flip-history li {
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--border-color);
-}
-#flip-history li:last-child {
-    border-bottom: none;
+.effects-grid label:hover {
+    background: #4a4a6a;
 }
 
-#flip-history li.heads {
-    font-weight: 600;
-    color: var(--heads-color);
-    background-color: rgba(255, 193, 7, 0.05);
+.effects-grid input[type="radio"]:checked + label {
+    background: var(--secondary-color);
+    color: var(--bg-color);
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(252, 163, 17, 0.5);
+    border-color: var(--secondary-color);
 }
 
-#flip-history li.tails {
-    font-weight: 600;
-    color: var(--tails-color);
-    background-color: rgba(23, 162, 184, 0.05);
+/* --- Speed Slider --- */
+.speed-control {
+    margin-top: 2rem;
+}
+.speed-control label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+.speed-control input[type="range"] {
+    width: 100%;
+    cursor: pointer;
 }
 
-/* --- Media Query for Small Devices --- */
-@media (max-width: 480px) {
-    main {
-        margin: 1rem auto;
-        padding: 0 0.5rem;
-        gap: 1rem;
+/* --- Output Section --- */
+.output-section {
+    margin-top: 2rem;
+}
+
+.preview-box {
+    min-height: 150px;
+    background: #2a2a4e;
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.6;
+    word-break: break-word;
+    overflow: hidden; /* Important for typewriter */
+}
+
+/* --- Base Span Styling --- */
+/* Each character will be wrapped in a span */
+#output-preview span {
+    display: inline-block;
+    /* Use 'will-change' for performance boost on animated properties */
+    will-change: transform, opacity, color;
+}
+
+
+/* ================================== */
+/* ====== ANIMATION EFFECTS ========= */
+/* ================================== */
+
+/* --- 1. Rainbow Effect --- */
+/* Uses :nth-child to cycle colors */
+.effect-rainbow span:nth-child(7n+1) { color: #ff0000; }
+.effect-rainbow span:nth-child(7n+2) { color: #ff7f00; }
+.effect-rainbow span:nth-child(7n+3) { color: #ffff00; }
+.effect-rainbow span:nth-child(7n+4) { color: #00ff00; }
+.effect-rainbow span:nth-child(7n+5) { color: #0000ff; }
+.effect-rainbow span:nth-child(7n+6) { color: #4b0082; }
+.effect-rainbow span:nth-child(7n+7) { color: #9400d3; }
+
+/* --- 2. Wave Effect --- */
+@keyframes wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.effect-wave span {
+    animation-name: wave;
+    animation-duration: calc(1.5s * var(--anim-speed));
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    /* Stagger the animation based on character index (set by JS) */
+    animation-delay: calc(var(--i) * 0.07s);
+}
+
+/* --- 3. Glow Effect --- */
+@keyframes glow {
+    0%, 100% { 
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #00aaff, 0 0 20px #00aaff;
     }
-    .tool-card {
+    50% { 
+        text-shadow: 0 0 10px #fff, 0 0 15px #fff, 0 0 25px #00aaff, 0 0 30px #00aaff;
+    }
+}
+
+.effect-glow {
+    color: #fff;
+}
+.effect-glow span {
+    animation-name: glow;
+    animation-duration: calc(2s * var(--anim-speed));
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+
+/* --- 4. Scatter Effect --- */
+@keyframes scatter-in {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.3);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.effect-scatter span {
+    animation-name: scatter-in;
+    animation-duration: calc(0.8s * var(--anim-speed));
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation-fill-mode: both; /* Keeps the 'to' state */
+    animation-delay: calc(var(--i) * 0.03s);
+}
+
+/* --- 5. Typewriter Effect --- */
+/* This effect is applied to the container, not spans */
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--secondary-color); }
+}
+
+.effect-typewriter {
+    font-family: 'Press Start 2P', monospace; /* Monospace font is crucial */
+    font-size: 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: .15em solid var(--secondary-color);
+    /* Animation:
+       1. 'typing' animates the width using 'steps' based on character count (set by JS)
+       2. 'blink-caret' animates the border (cursor)
+    */
+    animation: 
+        typing calc(0.1s * var(--chars) * var(--anim-speed)) steps(var(--chars), end),
+        blink-caret calc(0.75s * var(--anim-speed)) step-end infinite;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+    .container {
         padding: 1.5rem;
     }
-    .form-controls {
-        flex-direction: column;
+    .preview-box {
+        font-size: 1.5rem;
     }
-    .result-display {
-        font-size: 2rem;
+    .effects-grid {
+        gap: 0.5rem;
     }
-    .coin {
-        width: 80px;
-        height: 80px;
-        font-size: 2.5rem;
+    .effects-grid label {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
     }
 }
