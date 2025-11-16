@@ -1,12 +1,20 @@
 /* --- Root Variables & Base Setup --- */
 :root {
-    --anim-speed: 1; /* Default animation speed multiplier */
-    --bg-color: #1a1a2e;
-    --container-bg: #1f1f3a;
-    --primary-color: #e0e0e0;
-    --secondary-color: #fca311;
-    --border-color: #4a4a6a;
-    --shadow-color: rgba(0, 0, 0, 0.2);
+    --anim-speed: 1;
+    --primary-font: 'Inter', sans-serif;
+    --mono-font: 'Press Start 2P', monospace;
+    
+    --color-text: #ffffff;
+    --color-text-dim: #b0b8c0;
+    --color-accent: #00aaff;
+    --color-accent-dark: #0077bb;
+    --color-success: #4ade80;
+    --color-success-dark: #22c55e;
+    
+    --panel-bg: rgba(20, 20, 30, 0.4);
+    --panel-border: rgba(255, 255, 255, 0.1);
+    --shadow-light: rgba(255, 255, 255, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -16,173 +24,258 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, var(--bg-color), #2a2a4e);
-    color: var(--primary-color);
+    font-family: var(--primary-font);
+    color: var(--color-text);
     display: grid;
     place-items: center;
     min-height: 100vh;
-    padding: 2rem 1rem;
-}
-
-.container {
-    width: 100%;
-    max-width: 800px;
-    background: var(--container-bg);
     padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px var(--shadow-color);
-    border: 1px solid var(--border-color);
+    overflow: hidden; /* Hide scrollbars caused by background */
 }
 
-h1 {
-    text-align: center;
-    color: #fff;
-    margin-bottom: 0.5rem;
+/* --- Animated Gradient Background --- */
+@keyframes gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-p {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #b0b0d0;
+.background-gradient {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -1;
+    background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a2a6c, #b21f1f, #fdbb2d);
+    background-size: 400% 400%;
+    animation: gradient-flow 30s ease infinite;
 }
 
+h1, h3 {
+    font-weight: 700;
+}
 h3 {
     margin-bottom: 1rem;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 0.5rem;
-    color: #fff;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
 }
 
-/* --- Input & Controls --- */
-.input-section textarea {
+/* --- Main Layout --- */
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr; /* Input left, output right */
+    gap: 2rem;
     width: 100%;
-    height: 120px;
-    padding: 1rem;
+    max-width: 1200px;
+}
+
+.panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 var(--shadow-dark);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-panel {
+    height: 75vh;
+}
+.output-panel {
+    height: 75vh;
+}
+
+.panel-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(90deg, #fff, #b0b8c0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.panel-header p {
+    font-size: 1.1rem;
+    color: var(--color-text-dim);
+    margin-bottom: 1.5rem;
+}
+
+/* --- Input Panel --- */
+.input-area {
+    flex-grow: 1; /* Make textarea fill available space */
+}
+
+#text-input {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--panel-border);
     border-radius: 8px;
-    border: 1px solid var(--border-color);
-    background: #2a2a4e;
-    color: var(--primary-color);
-    font-size: 1rem;
-    font-family: 'Roboto', sans-serif;
-    resize: vertical;
+    padding: 1rem;
+    color: var(--color-text);
+    font-family: var(--primary-font);
+    font-size: 1.1rem;
+    resize: none;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.input-section textarea:focus {
+#text-input:focus {
     outline: none;
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 10px rgba(252, 163, 17, 0.3);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 15px rgba(0, 170, 255, 0.3);
 }
 
 .input-controls {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
 .input-controls button {
-    flex-grow: 1;
-    padding: 0.75rem;
+    padding: 0.85rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: all 0.3s ease;
 }
 
 #clear-btn {
-    background: #5a5a7a;
-    color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-dim);
 }
 #clear-btn:hover {
-    background: #6a6a8a;
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-text);
 }
 
 #copy-btn {
-    background: var(--secondary-color);
-    color: var(--bg-color);
+    background: var(--color-accent);
+    color: #fff;
 }
 #copy-btn:hover {
-    background: #ffb74d;
+    background: var(--color-accent-dark);
+    transform: translateY(-2px);
+}
+/* Style for when copy is successful */
+#copy-btn.copied {
+    background: var(--color-success);
+}
+#copy-btn.copied:hover {
+    background: var(--color-success-dark);
 }
 
-/* --- Effect Selection --- */
-.controls-panel {
-    margin-top: 2rem;
-}
-
+/* --- Output Panel --- */
 .effects-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
 }
 
-.effects-grid input[type="radio"] {
-    display: none; /* Hide the actual radio button */
-}
-
-.effects-grid label {
-    padding: 0.7rem 1.2rem;
-    background: #3a3a5a;
+.effect-btn {
+    padding: 0.6rem 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--panel-border);
+    color: var(--color-text-dim);
     border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    border: 1px solid var(--border-color);
+    font-size: 0.9rem;
     font-weight: 500;
+    transition: all 0.3s ease;
 }
 
-.effects-grid label:hover {
-    background: #4a4a6a;
+.effect-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
 }
 
-.effects-grid input[type="radio"]:checked + label {
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(252, 163, 17, 0.5);
-    border-color: var(--secondary-color);
+.effect-btn.active {
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: 600;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
 }
 
-/* --- Speed Slider --- */
-.speed-control {
-    margin-top: 2rem;
-}
-.speed-control label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-}
-.speed-control input[type="range"] {
-    width: 100%;
-    cursor: pointer;
-}
-
-/* --- Output Section --- */
 .output-section {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
+    flex-grow: 1; /* Make preview box fill space */
+    display: flex;
+    flex-direction: column;
 }
 
 .preview-box {
-    min-height: 150px;
-    background: #2a2a4e;
-    border: 1px dashed var(--border-color);
+    flex-grow: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px dashed var(--panel-border);
     border-radius: 8px;
     padding: 1.5rem;
     font-size: 2rem;
     font-weight: 700;
     line-height: 1.6;
     word-break: break-word;
-    overflow: hidden; /* Important for typewriter */
+    overflow-y: auto; /* Add scroll if content overflows */
 }
 
-/* --- Base Span Styling --- */
-/* Each character will be wrapped in a span */
+/* Placeholder for empty output box */
+.preview-box:empty::before {
+    content: "Your formatted text will appear here...";
+    color: var(--color-text-dim);
+    font-weight: 400;
+    font-size: 1.2rem;
+    font-style: italic;
+    display: grid;
+    place-items: center;
+    height: 100%;
+    text-align: center;
+}
+
 #output-preview span {
     display: inline-block;
-    /* Use 'will-change' for performance boost on animated properties */
-    will-change: transform, opacity, color;
+    will-change: transform, opacity, color, text-shadow;
+}
+
+.panel-footer {
+    margin-top: 1.5rem;
+}
+.panel-footer label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--color-text-dim);
+}
+input[type="range"] {
+    width: 100%;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+/* Slider Track */
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+/* Slider Thumb */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    margin-top: -6px; /* Center thumb on track */
+    transition: background 0.3s;
+}
+input[type="range"]:hover::-webkit-slider-thumb {
+    background: var(--color-accent-dark);
 }
 
 
@@ -190,32 +283,38 @@ h3 {
 /* ====== ANIMATION EFFECTS ========= */
 /* ================================== */
 
-/* --- 1. Rainbow Effect --- */
-/* Uses :nth-child to cycle colors */
-.effect-rainbow span:nth-child(7n+1) { color: #ff0000; }
-.effect-rainbow span:nth-child(7n+2) { color: #ff7f00; }
-.effect-rainbow span:nth-child(7n+3) { color: #ffff00; }
-.effect-rainbow span:nth-child(7n+4) { color: #00ff00; }
-.effect-rainbow span:nth-child(7n+5) { color: #0000ff; }
-.effect-rainbow span:nth-child(7n+6) { color: #4b0082; }
-.effect-rainbow span:nth-child(7n+7) { color: #9400d3; }
+/* --- 1. Rainbow --- */
+@keyframes rainbow-cycle {
+    0% { color: #ff0000; }
+    14% { color: #ff7f00; }
+    28% { color: #ffff00; }
+    42% { color: #00ff00; }
+    57% { color: #0000ff; }
+    71% { color: #4b0082; }
+    85% { color: #9400d3; }
+    100% { color: #ff0000; }
+}
+.effect-rainbow span {
+    animation-name: rainbow-cycle;
+    animation-duration: calc(4s * var(--anim-speed));
+    animation-iteration-count: infinite;
+    animation-delay: calc(var(--i) * 0.05s);
+}
 
-/* --- 2. Wave Effect --- */
+/* --- 2. Wave --- */
 @keyframes wave {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-15px); }
 }
-
 .effect-wave span {
     animation-name: wave;
     animation-duration: calc(1.5s * var(--anim-speed));
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
-    /* Stagger the animation based on character index (set by JS) */
     animation-delay: calc(var(--i) * 0.07s);
 }
 
-/* --- 3. Glow Effect --- */
+/* --- 3. Glow --- */
 @keyframes glow {
     0%, 100% { 
         text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #00aaff, 0 0 20px #00aaff;
@@ -224,7 +323,6 @@ h3 {
         text-shadow: 0 0 10px #fff, 0 0 15px #fff, 0 0 25px #00aaff, 0 0 30px #00aaff;
     }
 }
-
 .effect-glow {
     color: #fff;
 }
@@ -236,68 +334,95 @@ h3 {
     animation-delay: calc(var(--i) * 0.04s);
 }
 
-/* --- 4. Scatter Effect --- */
+/* --- 4. Neon (NEW) --- */
+@keyframes neon-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        color: #fff;
+        text-shadow:
+            0 0 4px #fff,
+            0 0 10px #ff00de,
+            0 0 18px #ff00de,
+            0 0 38px #ff00de,
+            0 0 70px #ff00de;
+    }
+    20%, 24%, 55% { 
+        color: #888;
+        text-shadow: none;
+    }
+}
+.effect-neon {
+    animation-name: neon-flicker;
+    animation-duration: calc(3s * var(--anim-speed));
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+/* --- 5. Scatter --- */
 @keyframes scatter-in {
     from {
         opacity: 0;
-        transform: translateY(40px) scale(0.3);
+        transform: translateY(40px) scale(0.3) rotate(180deg);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0) scale(1) rotate(0deg);
     }
 }
-
 .effect-scatter span {
     animation-name: scatter-in;
     animation-duration: calc(0.8s * var(--anim-speed));
     animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    animation-fill-mode: both; /* Keeps the 'to' state */
+    animation-fill-mode: both;
     animation-delay: calc(var(--i) * 0.03s);
 }
 
-/* --- 5. Typewriter Effect --- */
-/* This effect is applied to the container, not spans */
+/* --- 6. Typewriter --- */
 @keyframes typing {
     from { width: 0; }
     to { width: 100%; }
 }
 @keyframes blink-caret {
     from, to { border-color: transparent; }
-    50% { border-color: var(--secondary-color); }
+    50% { border-color: var(--color-accent); }
 }
-
 .effect-typewriter {
-    font-family: 'Press Start 2P', monospace; /* Monospace font is crucial */
+    font-family: var(--mono-font);
     font-size: 1.5rem;
     white-space: nowrap;
     overflow: hidden;
-    border-right: .15em solid var(--secondary-color);
-    /* Animation:
-       1. 'typing' animates the width using 'steps' based on character count (set by JS)
-       2. 'blink-caret' animates the border (cursor)
-    */
+    border-right: .15em solid var(--color-accent);
+    width: fit-content; /* Important for container animation */
     animation: 
         typing calc(0.1s * var(--chars) * var(--anim-speed)) steps(var(--chars), end),
         blink-caret calc(0.75s * var(--anim-speed)) step-end infinite;
 }
 
+
 /* --- Responsive Design --- */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
     body {
-        padding: 1rem 0.5rem;
+        padding: 1rem;
+        height: auto;
+        overflow-y: auto;
     }
     .container {
-        padding: 1.5rem;
+        grid-template-columns: 1fr; /* Stack panels */
+        max-width: 600px;
+    }
+    .panel {
+        height: auto; /* Let content define height */
+    }
+    .input-panel {
+        height: auto; /* Unset fixed height */
+    }
+    .output-panel {
+        height: auto; /* Unset fixed height */
+    }
+    .input-area {
+        height: 250px; /* Give textarea a fixed height on mobile */
     }
     .preview-box {
+        min-height: 250px;
         font-size: 1.5rem;
-    }
-    .effects-grid {
-        gap: 0.5rem;
-    }
-    .effects-grid label {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.9rem;
     }
 }
