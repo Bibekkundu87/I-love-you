@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. Select DOM Elements ---
     const textInput = document.getElementById('text-input');
     const outputPreview = document.getElementById('output-preview');
-    const effectControls = document.getElementById('effect-controls');
+    const effectsPanel = document.getElementById('effects-grid');
     const clearBtn = document.getElementById('clear-btn');
     const copyBtn = document.getElementById('copy-btn');
     const speedSlider = document.getElementById('speed-slider');
@@ -18,25 +18,22 @@ document.addEventListener('DOMContentLoaded', () => {
         outputPreview.innerHTML = '';
         outputPreview.className = 'preview-box'; // Reset to base class
         
-        // Get the currently selected effect
-        const selectedEffectInput = document.querySelector('input[name="effect"]:checked');
-        if (selectedEffectInput) {
-            currentEffect = selectedEffectInput.value;
-        }
-
         if (currentEffect === 'effect-none') {
             outputPreview.textContent = text;
             return;
         }
 
-        // --- Special Case: Typewriter ---
-        // This effect animates the container, not individual spans
-        if (currentEffect === 'effect-typewriter') {
+        // --- Special Case: Typewriter & Neon ---
+        // These effects animate the container, not individual spans
+        if (currentEffect === 'effect-typewriter' || currentEffect === 'effect-neon') {
             outputPreview.classList.add(currentEffect);
             outputPreview.textContent = text; // Set plain text
+            
             // Set custom property for character count, used by CSS 'steps()'
-            outputPreview.style.setProperty('--chars', text.length);
-            return; // Stop here for typewriter
+            if (currentEffect === 'effect-typewriter') {
+                outputPreview.style.setProperty('--chars', text.length);
+            }
+            return; // Stop here for these effects
         }
 
         // --- Default Case: Split text into <span> elements ---
@@ -60,8 +57,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Real-time update as user types
     textInput.addEventListener('input', updatePreview);
 
-    // Update when a new effect is selected
-    effectControls.addEventListener('change', updatePreview);
+    // Use EVENT DELEGATION for effect buttons
+    effectsPanel.addEventListener('click', (e) => {
+        // Find the button that was clicked
+        const clickedButton = e.target.closest('.effect-btn');
+        
+        if (!clickedButton) return; // Exit if click wasn't on a button
+
+        // Remove 'active' class from all buttons
+        effectsPanel.querySelectorAll('.effect-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Add 'active' class to the clicked button
+        clickedButton.classList.add('active');
+
+        // Update the current effect
+        currentEffect = clickedButton.dataset.effect;
+        
+        // Re-run the preview update
+        updatePreview();
+    });
 
     // Clear button functionality
     clearBtn.addEventListener('click', () => {
@@ -72,17 +88,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Copy to clipboard functionality
     copyBtn.addEventListener('click', () => {
-        // Copy the plain text content, not the HTML
         navigator.clipboard.writeText(outputPreview.innerText)
             .then(() => {
                 // Visual feedback
-                copyBtn.textContent = 'Copied!';
+                copyBtn.innerHTML = '✅ Copied!';
+                copyBtn.classList.add('copied');
+                
                 setTimeout(() => {
-                    copyBtn.textContent = 'Copy Text';
-                }, 1500);
+                    copyBtn.innerHTML = '📋 Copy Text';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
             })
             .catch(err => {
                 console.error('Failed to copy text: ', err);
+                copyBtn.innerHTML = '❌ Error';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '📋 Copy Text';
+                }, 2000);
             });
     });
 
@@ -92,12 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.setProperty('--anim-speed', e.target.value);
         
         // Re-run the update logic to apply new speed
-        // This is important for CSS animations that depend on variables at creation time
         updatePreview();
     });
 
     // --- 4. Initial Call ---
-    // Run once on load to format any default text (if any)
     updatePreview();
 
 });
