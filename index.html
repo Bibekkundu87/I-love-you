@@ -3,60 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Text Formatter</title>
+    <title>StyloText | Attractive Text Formatter</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <div class="background-gradient"></div>
+
     <main class="container">
-        <h1>✨ Lovable Text Formatter ✨</h1>
-        <p>Type in the box below and select an effect to see your text transform!</p>
-
-        <div class="input-section">
-            <textarea id="text-input" placeholder="Type your text here..."></textarea>
+        
+        <section class="panel input-panel">
+            <header class="panel-header">
+                <h1>StyloText ✨</h1>
+                <p>Create lovable text animations in real-time.</p>
+            </header>
+            
+            <div class="input-area">
+                <textarea id="text-input" placeholder="Type your text here..."></textarea>
+            </div>
+            
             <div class="input-controls">
-                <button id="clear-btn">Clear</button>
-                <button id="copy-btn">Copy Text</button>
+                <button id="clear-btn">Clear Text</button>
+                <button id="copy-btn">📋 Copy Text</button>
             </div>
-        </div>
+        </section>
 
-        <div class="controls-panel">
-            <h3>Choose Your Effect</h3>
-            <div id="effect-controls" class="effects-grid">
+        <section class="panel output-panel">
+            <div class="controls-panel">
+                <h3>Choose Your Effect</h3>
                 
-                <input type="radio" name="effect" id="effect-none" value="effect-none" checked>
-                <label for="effect-none">None</label>
-                
-                <input type="radio" name="effect" id="effect-rainbow" value="effect-rainbow">
-                <label for="effect-rainbow">🌈 Rainbow</label>
-
-                <input type="radio" name="effect" id="effect-wave" value="effect-wave">
-                <label for="effect-wave">🌊 Wave</label>
-
-                <input type="radio" name="effect" id="effect-glow" value="effect-glow">
-                <label for="effect-glow">💡 Glow</label>
-
-                <input type="radio" name="effect" id="effect-scatter" value="effect-scatter">
-                <label for="effect-scatter">💥 Scatter</label>
-
-                <input type="radio" name="effect" id="effect-typewriter" value="effect-typewriter">
-                <label for="effect-typewriter">⌨️ Typewriter</label>
-            </div>
-        </div>
-
-        <div class="speed-control">
-            <label for="speed-slider">Animation Speed</label>
-            <input type="range" id="speed-slider" min="0.5" max="2.5" value="1" step="0.1">
-        </div>
-
-        <div class="output-section">
-            <h3>Preview</h3>
-            <div id="output-preview" class="preview-box" aria-live="polite">
+                <div id="effects-grid" class="effects-grid">
+                    <button class="effect-btn active" data-effect="effect-none">🚫 None</button>
+                    <button class="effect-btn" data-effect="effect-rainbow">🌈 Rainbow</button>
+                    <button class="effect-btn" data-effect="effect-wave">🌊 Wave</button>
+                    <button class="effect-btn" data-effect="effect-glow">💡 Glow</button>
+                    <button class="effect-btn" data-effect="effect-neon">💠 Neon</button>
+                    <button class="effect-btn" data-effect="effect-scatter">💥 Scatter</button>
+                    <button class="effect-btn" data-effect="effect-typewriter">⌨️ Typewriter</button>
                 </div>
-        </div>
+            </div>
+
+            <div class="output-section">
+                <h3>Preview</h3>
+                <div id="output-preview" class="preview-box" aria-live="polite"></div>
+            </div>
+
+            <footer class="panel-footer">
+                <label for="speed-slider">Animation Speed</label>
+                <input type="range" id="speed-slider" min="0.5" max="2.5" value="1" step="0.1">
+            </footer>
+        </section>
 
     </main>
 
