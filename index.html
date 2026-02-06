@@ -1,64 +1,883 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StyloText | Attractive Text Formatter</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Pro Resume Builder - 6 Premium Templates</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&family=Roboto+Mono:wght@400;500&family=Montserrat:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --a4-width: 210mm;
+            --a4-height: 297mm;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #resume-preview-container {
+            width: var(--a4-width);
+            height: var(--a4-height);
+            background: white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform-origin: top center;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 1280px) {
+            #resume-preview-container {
+                transform: scale(0.85);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            #resume-preview-container {
+                transform: scale(0.7);
+            }
+        }
+
+        /* --- PRINT STYLES --- */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            header,
+            .lg\:grid-cols-2>div:first-child,
+            #status-msg,
+            .bg-gray-300 {
+                display: none !important;
+            }
+
+            .max-w-7xl,
+            .p-4,
+            .md\:p-8 {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: none !important;
+            }
+
+            .lg\:grid-cols-2 {
+                display: block !important;
+            }
+
+            #resume-preview-container {
+                transform: scale(1) !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                width: var(--a4-width) !important;
+                height: var(--a4-height) !important;
+                page-break-after: avoid;
+                page-break-before: avoid;
+            }
+        }
+
+        /* --- TEMPLATE STYLES --- */
+
+        /* 1. Modern */
+        .template-modern {
+            display: grid;
+            grid-template-columns: 35% 65%;
+            height: 100%;
+            min-height: var(--a4-height);
+            color: #333;
+        }
+
+        .template-modern .sidebar {
+            background-color: #1a202c;
+            color: white;
+            padding: 40px 25px;
+        }
+
+        .template-modern .main-content {
+            padding: 40px 35px;
+        }
+
+        .template-modern h1 {
+            font-size: 26px;
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .template-modern h2 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+            margin: 30px 0 15px 0;
+        }
+
+        .template-modern .sidebar h2 {
+            color: #63b3ed;
+            border-bottom-color: #2d3748;
+            margin-top: 25px;
+        }
+
+        .template-modern .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #4a5568;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        /* 2. Classic */
+        .template-classic {
+            padding: 50px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .template-classic .header {
+            text-align: center;
+            border-bottom: 2px solid #1a1a1a;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .template-classic h2 {
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: 700;
+            text-align: center;
+            margin: 30px 0 20px 0;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 5px 0;
+            letter-spacing: 2px;
+        }
+
+        .template-classic .profile-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #000;
+            margin: 0 auto 15px auto;
+        }
+
+        /* 3. Minimalist */
+        .template-minimalist {
+            padding: 60px;
+        }
+
+        .template-minimalist h2 {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #a0aec0;
+            margin: 40px 0 20px 0;
+        }
+
+        .template-minimalist .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        /* 4. Executive (NEW) */
+        .template-executive {
+            padding: 0;
+            color: #2d3748;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .template-executive .top-bar {
+            background: #1a365d;
+            height: 15px;
+        }
+
+        .template-executive .header {
+            padding: 40px 50px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .template-executive .profile-img {
+            width: 110px;
+            height: 110px;
+            border: 5px solid white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+        }
+
+        .template-executive .content {
+            padding: 40px 50px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .template-executive h1 {
+            font-size: 34px;
+            color: #1a365d;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .template-executive h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #c09e5b;
+            border-bottom: 1px solid #c09e5b;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+        }
+
+        /* 5. Creative (NEW) */
+        .template-creative {
+            padding: 40px;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-creative::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: #6366f1;
+            transform: skewY(-5deg);
+            transform-origin: top left;
+            z-index: 0;
+        }
+
+        .template-creative .header {
+            position: relative;
+            z-index: 1;
+            color: white;
+            margin-bottom: 60px;
+            display: flex;
+            align-items: flex-end;
+            gap: 25px;
+        }
+
+        .template-creative .profile-img {
+            width: 150px;
+            height: 150px;
+            border: 8px solid white;
+            rotate: -3deg;
+            object-fit: cover;
+        }
+
+        .template-creative h1 {
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 0.9;
+        }
+
+        .template-creative .grid-layout {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .template-creative h2 {
+            font-size: 18px;
+            font-weight: 900;
+            background: #6366f1;
+            color: white;
+            display: inline-block;
+            padding: 2px 10px;
+            margin-bottom: 15px;
+            transform: skewX(-10deg);
+        }
+
+        /* 6. Technical (NEW) */
+        /* FIXED: justify-content was invalid 'justify-between', changed to 'space-between' */
+        .template-technical {
+            padding: 40px;
+            font-family: 'Roboto Mono', monospace;
+            color: #0f172a;
+        }
+
+        .template-technical .header {
+            border: 2px solid #0f172a;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .template-technical .profile-img {
+            width: 90px;
+            height: 90px;
+            filter: grayscale(100%);
+            border: 2px solid #0f172a;
+            padding: 3px;
+        }
+
+        .template-technical .section {
+            margin-bottom: 25px;
+        }
+
+        .template-technical h2 {
+            background: #0f172a;
+            color: white;
+            padding: 4px 12px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .template-technical .item {
+            border-left: 2px solid #e2e8f0;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+    </style>
 </head>
-<body>
 
-    <div class="background-gradient"></div>
+<body class="p-4 md:p-8">
 
-    <main class="container">
-        
-        <section class="panel input-panel">
-            <header class="panel-header">
-                <h1>StyloText ✨</h1>
-                <p>Create lovable text animations in real-time.</p>
-            </header>
-            
-            <div class="input-area">
-                <textarea id="text-input" placeholder="Type your text here..."></textarea>
+    <div class="max-w-7xl mx-auto">
+        <header class="flex justify-between items-center mb-8 bg-white p-6 rounded-xl shadow-sm">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tighter">RESUMEPRO <span
+                        class="text-blue-600">2.0</span></h1>
+                <p class="text-gray-500 text-sm">Now with 6 Premium Templates</p>
             </div>
-            
-            <div class="input-controls">
-                <button id="clear-btn">Clear Text</button>
-                <button id="copy-btn">📋 Copy Text</button>
+            <div class="flex space-x-3">
+                <button onclick="exportPDF()"
+                    class="bg-gray-900 text-white px-5 py-2.5 rounded-lg font-bold shadow-lg hover:bg-black transition flex items-center gap-2">
+                    <span>PDF Export</span>
+                </button>
+                <button onclick="exportPNG()"
+                    class="bg-white text-gray-900 border border-gray-200 px-5 py-2.5 rounded-lg font-bold shadow-sm hover:bg-gray-50 transition">
+                    PNG Image
+                </button>
             </div>
-        </section>
+        </header>
 
-        <section class="panel output-panel">
-            <div class="controls-panel">
-                <h3>Choose Your Effect</h3>
-                
-                <div id="effects-grid" class="effects-grid">
-                    <button class="effect-btn active" data-effect="effect-none">🚫 None</button>
-                    <button class="effect-btn" data-effect="effect-rainbow">🌈 Rainbow</button>
-                    <button class="effect-btn" data-effect="effect-wave">🌊 Wave</button>
-                    <button class="effect-btn" data-effect="effect-glow">💡 Glow</button>
-                    <button class="effect-btn" data-effect="effect-neon">💠 Neon</button>
-                    <button class="effect-btn" data-effect="effect-scatter">💥 Scatter</button>
-                    <button class="effect-btn" data-effect="effect-typewriter">⌨️ Typewriter</button>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+            <!-- LEFT: CONTROLS -->
+            <div class="bg-white p-6 rounded-2xl shadow-xl h-fit sticky top-8">
+                <nav class="flex space-x-1 bg-gray-100 p-1 rounded-xl mb-8">
+                    <button onclick="showSection('personal')"
+                        class="step-btn flex-1 py-2 text-sm font-bold rounded-lg transition active-tab"
+                        id="btn-personal">Profile</button>
+                    <button onclick="showSection('experience')"
+                        class="step-btn flex-1 py-2 text-sm font-bold rounded-lg transition text-gray-500"
+                        id="btn-experience">Work</button>
+                    <button onclick="showSection('education')"
+                        class="step-btn flex-1 py-2 text-sm font-bold rounded-lg transition text-gray-500"
+                        id="btn-education">Edu</button>
+                    <button onclick="showSection('skills')"
+                        class="step-btn flex-1 py-2 text-sm font-bold rounded-lg transition text-gray-500"
+                        id="btn-skills">Skills</button>
+                    <button onclick="showSection('templates')"
+                        class="step-btn flex-1 py-2 text-sm font-bold rounded-lg transition text-gray-500"
+                        id="btn-templates">Style</button>
+                </nav>
+
+                <form id="resume-form" oninput="updatePreview()">
+                    <!-- Personal -->
+                    <div id="section-personal" class="form-section active">
+                        <div class="mb-6 flex items-center gap-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <div id="photo-preview-form"
+                                class="w-20 h-20 bg-white rounded-xl shadow-inner flex items-center justify-center overflow-hidden border-2 border-white">
+                                <span class="text-blue-300 text-[10px] font-bold uppercase">No Photo</span>
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs font-black text-blue-900 uppercase mb-1">Profile
+                                    Photo</label>
+                                <input type="file" accept="image/*" onchange="handlePhotoUpload(this)"
+                                    class="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                                <button type="button" onclick="removePhoto()"
+                                    class="text-[10px] text-red-500 mt-2 font-bold underline">Remove</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Full Name</label>
+                                <input type="text" id="input-name" placeholder="Alex Carter"
+                                    class="w-full border-gray-200 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Target Title</label>
+                                <input type="text" id="input-title" placeholder="Lead Architect"
+                                    class="w-full border-gray-200 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
+                                <input type="email" id="input-email" placeholder="alex@carter.com"
+                                    class="w-full border-gray-200 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Phone</label>
+                                <input type="text" id="input-phone" placeholder="+1 555 0123"
+                                    class="w-full border-gray-200 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <!-- RESTORED: Location Input -->
+                            <div class="col-span-2">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Location</label>
+                                <input type="text" id="input-location" placeholder="New York, USA"
+                                    class="w-full border-gray-200 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Summary</label>
+                                <textarea id="input-summary" rows="3"
+                                    class="w-full border-gray-200 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                    placeholder="High-achieving professional with..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work -->
+                    <div id="section-experience" class="form-section">
+                        <div id="experience-list"></div>
+                        <button type="button" onclick="addExperience()"
+                            class="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 font-bold hover:border-blue-400 hover:text-blue-500 transition">+
+                            Add Work Experience</button>
+                    </div>
+
+                    <!-- Education -->
+                    <div id="section-education" class="form-section">
+                        <div id="education-list"></div>
+                        <button type="button" onclick="addEducation()"
+                            class="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 font-bold hover:border-blue-400 hover:text-blue-500 transition">+
+                            Add Education</button>
+                    </div>
+
+                    <!-- Skills -->
+                    <div id="section-skills" class="form-section">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Technical & Soft
+                            Skills</label>
+                        <input type="text" id="input-skills" placeholder="Python, AWS, Management, UI Design"
+                            class="w-full border-gray-200 border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <p class="mt-2 text-[10px] text-gray-400 italic">Separate items with commas</p>
+                    </div>
+
+                    <!-- Template Swiper -->
+                    <div id="section-templates" class="form-section">
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="button" onclick="setTemplate('modern')"
+                                class="tpl-card p-3 border rounded-xl text-left hover:bg-gray-50"><span
+                                    class="block font-bold text-sm">Modern</span><span
+                                    class="text-[10px] text-gray-400">Sidebar layout</span></button>
+                            <button type="button" onclick="setTemplate('classic')"
+                                class="tpl-card p-3 border rounded-xl text-left hover:bg-gray-50"><span
+                                    class="block font-bold text-sm">Classic</span><span
+                                    class="text-[10px] text-gray-400">Serif centered</span></button>
+                            <button type="button" onclick="setTemplate('minimalist')"
+                                class="tpl-card p-3 border rounded-xl text-left hover:bg-gray-50"><span
+                                    class="block font-bold text-sm">Minimalist</span><span
+                                    class="text-[10px] text-gray-400">Clean whitespace</span></button>
+                            <button type="button" onclick="setTemplate('executive')"
+                                class="tpl-card p-3 border rounded-xl text-left hover:bg-gray-50 bg-blue-50 border-blue-200"><span
+                                    class="block font-bold text-sm text-blue-700">Executive</span><span
+                                    class="text-[10px] text-blue-400">Formal & Gold</span></button>
+                            <button type="button" onclick="setTemplate('creative')"
+                                class="tpl-card p-3 border rounded-xl text-left hover:bg-gray-50"><span
+                                    class="block font-bold text-sm">Creative</span><span
+                                    class="text-[10px] text-gray-400">Bold & Colorful</span></button>
+                            <button type="button" onclick="setTemplate('technical')"
+                                class="tpl-card p-3 border rounded-xl text-left hover:bg-gray-50"><span
+                                    class="block font-bold text-sm">Technical</span><span
+                                    class="text-[10px] text-gray-400">Mono grid</span></button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-8 pt-6 border-t flex items-center justify-between">
+                    <button onclick="resetData()"
+                        class="text-red-400 text-[10px] font-bold uppercase tracking-widest hover:text-red-600 transition">Reset
+                        All</button>
+                    <span class="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        Live Preview Active
+                    </span>
                 </div>
             </div>
 
-            <div class="output-section">
-                <h3>Preview</h3>
-                <div id="output-preview" class="preview-box" aria-live="polite"></div>
+            <!-- RIGHT: PREVIEW -->
+            <div class="bg-gray-300 rounded-3xl p-8 flex justify-center items-start overflow-auto min-h-[800px]">
+                <div id="resume-preview-container">
+                    <div id="resume-preview-content"></div>
+                </div>
             </div>
 
-            <footer class="panel-footer">
-                <label for="speed-slider">Animation Speed</label>
-                <input type="range" id="speed-slider" min="0.5" max="2.5" value="1" step="0.1">
-            </footer>
-        </section>
+        </div>
+    </div>
 
-    </main>
+    <div id="status-msg"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-20 transition-all duration-500 bg-gray-900 text-white px-8 py-3 rounded-full shadow-2xl z-50 text-sm font-bold">
+    </div>
 
-    <script src="script.js"></script>
+    <script>
+        let resumeData = {
+            personal: { name: '', title: '', email: '', phone: '', location: '', summary: '', photo: '' },
+            experience: [],
+            education: [],
+            skills: [],
+            currentTemplate: 'modern'
+        };
+
+        window.onload = () => {
+            loadFromLocalStorage();
+            if (resumeData.experience.length === 0) addExperience();
+            if (resumeData.education.length === 0) addEducation();
+            renderFormLists();
+            updatePreview();
+        };
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.step-btn').forEach(b => {
+                b.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+                b.classList.add('text-gray-500');
+            });
+            document.getElementById('section-' + sectionId).classList.add('active');
+            const btn = document.getElementById('btn-' + sectionId);
+            btn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+            btn.classList.remove('text-gray-500');
+        }
+
+        function handlePhotoUpload(input) {
+            const file = input.files[0];
+            if (!file || file.size > 1024 * 1024) {
+                notify(file ? "Error: Image too large (>1MB)" : "Upload failed");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                resumeData.personal.photo = e.target.result;
+                updatePhotoPreviewForm();
+                updatePreview();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePhoto() {
+            resumeData.personal.photo = '';
+            updatePhotoPreviewForm();
+            updatePreview();
+        }
+
+        function updatePhotoPreviewForm() {
+            const p = document.getElementById('photo-preview-form');
+            p.innerHTML = resumeData.personal.photo ? `<img src="${resumeData.personal.photo}" class="w-full h-full object-cover">` : `<span class="text-blue-300 text-[10px] font-bold">No Photo</span>`;
+        }
+
+        function addExperience() {
+            resumeData.experience.push({ company: '', role: '', dates: '', desc: '' });
+            renderFormLists();
+        }
+
+        function addEducation() {
+            resumeData.education.push({ school: '', degree: '', dates: '' });
+            renderFormLists();
+        }
+
+        function renderFormLists() {
+            const expList = document.getElementById('experience-list');
+            expList.innerHTML = resumeData.experience.map((exp, i) => `
+                <div class="bg-gray-50 p-4 rounded-xl mb-4 border relative group">
+                    <button type="button" onclick="removeExperience(${i})" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">Remove</button>
+                    <input type="text" placeholder="Company" value="${exp.company}" oninput="updateItem('experience', ${i}, 'company', this.value)" class="w-full mb-2 p-2 text-sm border-transparent focus:border-blue-200 outline-none bg-transparent font-bold">
+                    <input type="text" placeholder="Role" value="${exp.role}" oninput="updateItem('experience', ${i}, 'role', this.value)" class="w-full mb-2 p-2 text-sm border-transparent focus:border-blue-200 outline-none bg-transparent">
+                    <input type="text" placeholder="Dates" value="${exp.dates}" oninput="updateItem('experience', ${i}, 'dates', this.value)" class="w-full mb-2 p-2 text-xs border-transparent focus:border-blue-200 outline-none bg-transparent">
+                    <textarea placeholder="Description" oninput="updateItem('experience', ${i}, 'desc', this.value)" class="w-full p-2 text-xs border-transparent focus:border-blue-200 outline-none bg-transparent resize-none">${exp.desc}</textarea>
+                </div>
+            `).join('');
+
+            const eduList = document.getElementById('education-list');
+            eduList.innerHTML = resumeData.education.map((edu, i) => `
+                <div class="bg-gray-50 p-4 rounded-xl mb-4 border relative group">
+                    <button type="button" onclick="removeEducation(${i})" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">Remove</button>
+                    <input type="text" placeholder="University" value="${edu.school}" oninput="updateItem('education', ${i}, 'school', this.value)" class="w-full mb-2 p-2 text-sm border-transparent focus:border-blue-200 outline-none bg-transparent font-bold">
+                    <input type="text" placeholder="Degree" value="${edu.degree}" oninput="updateItem('education', ${i}, 'degree', this.value)" class="w-full mb-1 p-2 text-sm border-transparent focus:border-blue-200 outline-none bg-transparent">
+                    <input type="text" placeholder="Dates" value="${edu.dates || ''}" oninput="updateItem('education', ${i}, 'dates', this.value)" class="w-full p-2 text-xs border-transparent focus:border-blue-200 outline-none bg-transparent">
+                </div>
+            `).join('');
+        }
+
+        function removeExperience(i) { resumeData.experience.splice(i, 1); renderFormLists(); updatePreview(); }
+        function removeEducation(i) { resumeData.education.splice(i, 1); renderFormLists(); updatePreview(); }
+        function updateItem(t, i, f, v) { resumeData[t][i][f] = v; updatePreview(); }
+        function setTemplate(t) { resumeData.currentTemplate = t; updatePreview(); }
+
+        function updatePreview() {
+            resumeData.personal.name = document.getElementById('input-name').value;
+            resumeData.personal.title = document.getElementById('input-title').value;
+            resumeData.personal.email = document.getElementById('input-email').value;
+            resumeData.personal.phone = document.getElementById('input-phone').value;
+            // RESTORED: Read location value
+            resumeData.personal.location = document.getElementById('input-location').value;
+            resumeData.personal.summary = document.getElementById('input-summary').value;
+            resumeData.skills = document.getElementById('input-skills').value.split(',').map(s => s.trim()).filter(s => s);
+
+            const container = document.getElementById('resume-preview-content');
+            container.className = `template-${resumeData.currentTemplate} h-full`;
+
+            const photo = resumeData.personal.photo ? `<img src="${resumeData.personal.photo}" class="profile-img">` : '';
+
+            // Render Logic Switcher
+            if (resumeData.currentTemplate === 'modern') renderModern(container, photo);
+            else if (resumeData.currentTemplate === 'classic') renderClassic(container, photo);
+            else if (resumeData.currentTemplate === 'minimalist') renderMinimalist(container, photo);
+            else if (resumeData.currentTemplate === 'executive') renderExecutive(container, photo);
+            else if (resumeData.currentTemplate === 'creative') renderCreative(container, photo);
+            else if (resumeData.currentTemplate === 'technical') renderTechnical(container, photo);
+
+            saveToLocalStorage();
+        }
+
+        function renderModern(el, photo) {
+            // RESTORED: Location display
+            el.innerHTML = `
+                <div class="sidebar">
+                    ${photo}
+                    <h1>${resumeData.personal.name || 'Name'}</h1>
+                    <p class="text-blue-400 font-bold mb-4">${resumeData.personal.title}</p>
+                    
+                    <h2>Contact</h2>
+                    <p class="text-[10px] break-all">${resumeData.personal.email}</p>
+                    <p class="text-[10px]">${resumeData.personal.phone}</p>
+                    <p class="text-[10px]">${resumeData.personal.location}</p>
+                    
+                    <h2>Qualifications</h2>
+                    ${resumeData.education.map(e => `
+                        <div class="mb-3">
+                            <p class="text-[10px] font-bold text-white">${e.school}</p>
+                            <p class="text-[9px] text-blue-300 font-medium">${e.degree}</p>
+                            <p class="text-[8px] opacity-60 italic">${e.dates}</p>
+                        </div>
+                    `).join('')}
+
+                    <h2>Skills</h2>
+                    <div class="flex flex-wrap gap-1">
+                        ${resumeData.skills.map(s => `<span class="bg-gray-700 text-[8px] px-2 py-1 rounded">${s}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="main-content">
+                    <h2 class="mt-0">Summary</h2>
+                    <p class="text-sm mb-6">${resumeData.personal.summary}</p>
+                    <h2>Work Experience</h2>
+                    ${resumeData.experience.map(e => `
+                        <div class="mb-4">
+                            <h3 class="font-bold text-sm">${e.role}</h3>
+                            <p class="text-blue-600 text-xs font-bold">${e.company}</p>
+                            <p class="text-[10px] text-gray-400 mb-1">${e.dates}</p>
+                            <p class="text-xs text-gray-600">${e.desc}</p>
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function renderClassic(el, photo) {
+            // RESTORED: Location display
+            el.innerHTML = `
+                <div class="header">
+                    ${photo}
+                    <h1>${resumeData.personal.name}</h1>
+                    <p class="italic">${resumeData.personal.title}</p>
+                    <p class="text-xs">${resumeData.personal.email} | ${resumeData.personal.phone} | ${resumeData.personal.location}</p>
+                </div>
+                <div class="px-10">
+                    <h2>Work Experience</h2>
+                    ${resumeData.experience.map(e => `<div class="mb-4"><strong>${e.company}</strong> — <em>${e.role}</em><br><small>${e.dates}</small><p class="text-sm">${e.desc}</p></div>`).join('')}
+                    <h2>Qualifications</h2>
+                    ${resumeData.education.map(e => `<div class="mb-2 text-center"><p class="text-sm"><strong>${e.school}</strong>, ${e.degree}</p><small class="text-gray-500">${e.dates}</small></div>`).join('')}
+                </div>`;
+        }
+
+        function renderMinimalist(el, photo) {
+            el.innerHTML = `
+                <div class="flex items-center gap-6 mb-8">
+                    ${photo}
+                    <div>
+                        <h1 class="text-4xl font-light">${resumeData.personal.name}</h1>
+                        <p class="text-gray-400">${resumeData.personal.title}</p>
+                        <p class="text-xs text-gray-300 mt-1">${resumeData.personal.location}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <h2 class="mt-0">Summary</h2>
+                        <p class="text-sm text-gray-600">${resumeData.personal.summary}</p>
+                    </div>
+                    <div>
+                        <h2>Professional Experience</h2>
+                        ${resumeData.experience.map(e => `<div class="mb-6"><div class="flex justify-between font-bold text-sm"><span>${e.role}</span><span class="text-gray-400">${e.dates}</span></div><div class="text-xs text-blue-500 mb-2">${e.company}</div><p class="text-xs text-gray-500">${e.desc}</p></div>`).join('')}
+                    </div>
+                    <div>
+                        <h2>Qualifications</h2>
+                        ${resumeData.education.map(e => `<div class="mb-4"><div class="flex justify-between font-bold text-sm"><span>${e.degree}</span><span class="text-gray-400">${e.dates}</span></div><div class="text-xs text-blue-500">${e.school}</div></div>`).join('')}
+                    </div>
+                </div>`;
+        }
+
+        function renderExecutive(el, photo) {
+            // RESTORED: Location display
+            el.innerHTML = `
+                <div class="top-bar"></div>
+                <div class="header">
+                    ${photo}
+                    <div>
+                        <h1>${resumeData.personal.name}</h1>
+                        <p class="text-lg text-gray-500">${resumeData.personal.title}</p>
+                        <p class="text-sm italic">${resumeData.personal.email} &bull; ${resumeData.personal.phone} &bull; ${resumeData.personal.location}</p>
+                    </div>
+                </div>
+                <div class="content">
+                    <div>
+                        <h2>Career Profile</h2>
+                        <p class="text-sm leading-relaxed">${resumeData.personal.summary}</p>
+                    </div>
+                    <div>
+                        <h2>Professional Background</h2>
+                        ${resumeData.experience.map(e => `<div class="mb-6"><div class="flex justify-between font-bold text-gray-900"><span>${e.role}</span><span>${e.dates}</span></div><div class="text-sm font-bold text-gray-500 mb-2">${e.company}</div><p class="text-sm leading-snug text-gray-600">${e.desc}</p></div>`).join('')}
+                    </div>
+                    <div>
+                        <h2>Professional Qualifications</h2>
+                        ${resumeData.education.map(e => `<div class="mb-4"><div class="flex justify-between font-bold text-gray-900"><span>${e.school}</span><span>${e.dates}</span></div><p class="text-sm text-gray-500">${e.degree}</p></div>`).join('')}
+                    </div>
+                    <div>
+                        <h2>Expertise</h2>
+                        <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold text-gray-700">
+                            ${resumeData.skills.map(s => `<span>&bull; ${s}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderCreative(el, photo) {
+            el.innerHTML = `
+                <div class="header">
+                    ${photo}
+                    <div>
+                        <h1>${resumeData.personal.name || 'Your Name'}</h1>
+                        <p class="text-xl font-bold tracking-widest opacity-80">${resumeData.personal.title}</p>
+                    </div>
+                </div>
+                <div class="grid-layout">
+                    <div>
+                        <h2>Experience</h2>
+                        ${resumeData.experience.map(e => `<div class="mb-6"><h3 class="font-black text-sm uppercase">${e.role}</h3><p class="text-xs font-bold text-indigo-600 mb-2">${e.company} / ${e.dates}</p><p class="text-xs leading-relaxed text-gray-600">${e.desc}</p></div>`).join('')}
+                    </div>
+                    <div>
+                        <h2>Skills</h2>
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            ${resumeData.skills.map(s => `<span class="bg-gray-100 text-gray-800 text-[10px] font-black px-3 py-1 border-b-2 border-indigo-500">${s}</span>`).join('')}
+                        </div>
+                        <h2>Qualifications</h2>
+                        ${resumeData.education.map(e => `<div class="mb-4"><p class="font-bold text-sm">${e.degree}</p><p class="text-[10px] text-indigo-600 font-bold">${e.dates}</p><p class="text-[10px] text-gray-500">${e.school}</p></div>`).join('')}
+                    </div>
+                </div>`;
+        }
+
+        function renderTechnical(el, photo) {
+            el.innerHTML = `
+                <div class="header">
+                    ${photo}
+                    <div class="text-right flex-1">
+                        <h1 class="text-2xl font-bold">./${resumeData.personal.name.toLowerCase().replace(/\s/g, '_') || 'user'}</h1>
+                        <p class="text-xs opacity-60">${resumeData.personal.title}</p>
+                        <p class="text-[10px] font-mono mt-2">${resumeData.personal.email} / ${resumeData.personal.location}</p>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2>01_SUMMARY</h2>
+                    <p class="text-xs font-mono leading-relaxed mt-2">&gt; ${resumeData.personal.summary}</p>
+                </div>
+                <div class="section">
+                    <h2>02_STACK</h2>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        ${resumeData.skills.map(s => `<span class="border border-gray-300 px-2 py-0.5 text-[10px]">"${s}"</span>`).join('')}
+                    </div>
+                </div>
+                <div class="section">
+                    <h2>03_EXPERIENCE</h2>
+                    ${resumeData.experience.map(e => `<div class="item"><div class="flex justify-between text-xs font-bold"><span>[${e.company}]</span><span>${e.dates}</span></div><div class="text-xs text-gray-500 mb-2">${e.role}</div><p class="text-[10px] leading-tight text-gray-600">${e.desc}</p></div>`).join('')}
+                </div>
+                <div class="section">
+                    <h2>04_QUALIFICATIONS</h2>
+                    ${resumeData.education.map(e => `<div class="item"><div class="flex justify-between text-xs font-bold"><span>[${e.school}]</span><span>${e.dates}</span></div><div class="text-xs text-gray-500">${e.degree}</div></div>`).join('')}
+                </div>`;
+        }
+
+        function exportPDF() {
+            notify("Rendering High-Res PDF...");
+            const element = document.getElementById('resume-preview-container');
+            element.style.transform = "scale(1)";
+            html2pdf().set({ margin: 0, filename: 'resume.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(element).save().then(() => { element.style.transform = ""; notify("PDF Ready!"); });
+        }
+
+        function exportPNG() {
+            notify("Capturing Image...");
+            const element = document.getElementById('resume-preview-container');
+            element.style.transform = "scale(1)";
+            html2canvas(element, { scale: 3 }).then(canvas => {
+                const link = document.createElement('a'); link.download = 'resume.png'; link.href = canvas.toDataURL(); link.click();
+                element.style.transform = ""; notify("PNG Saved!");
+            });
+        }
+
+        function saveToLocalStorage() { try { localStorage.setItem('resume_data_v2', JSON.stringify(resumeData)); } catch (e) { notify("Error saving: Photo too large?"); } }
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('resume_data_v2');
+            if (saved) {
+                resumeData = JSON.parse(saved);
+                document.getElementById('input-name').value = resumeData.personal.name || '';
+                document.getElementById('input-title').value = resumeData.personal.title || '';
+                document.getElementById('input-email').value = resumeData.personal.email || '';
+                document.getElementById('input-phone').value = resumeData.personal.phone || '';
+                // RESTORED: Location load
+                document.getElementById('input-location').value = resumeData.personal.location || '';
+                document.getElementById('input-summary').value = resumeData.personal.summary || '';
+                document.getElementById('input-skills').value = resumeData.skills.join(', ') || '';
+                updatePhotoPreviewForm();
+            }
+        }
+        function resetData() { if (confirm("Wipe all data?")) { localStorage.removeItem('resume_data_v2'); location.reload(); } }
+        function notify(msg) { const m = document.getElementById('status-msg'); m.innerText = msg; m.classList.remove('translate-y-20'); setTimeout(() => m.classList.add('translate-y-20'), 3000); }
+    </script>
 </body>
+
 </html>
